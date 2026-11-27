@@ -136,6 +136,7 @@ function HomeSearchPage() {
       return result;
     },
     ...(isInitialQuery ? { initialData: initialSearch } : {}),
+    staleTime: 30_000,
     placeholderData: (prev) => prev,
   });
 
@@ -143,6 +144,7 @@ function HomeSearchPage() {
     queryKey: ["promax-recent-searches"],
     queryFn: () => fetchRecent(),
     initialData: initialRecent,
+    staleTime: 30_000,
   });
 
   const data = searchQuery.data;
