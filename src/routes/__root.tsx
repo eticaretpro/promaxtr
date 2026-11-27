@@ -9,6 +9,9 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { PromaxSessionProvider } from "@/components/promax-session-context";
+import { PromaxHeader } from "@/components/promax-header";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -75,22 +78,30 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
-    // Replace these placeholders with the app's name and description when first building the app.
-    // Each content route, / included, must still set its own head(). Never add og:image or
-    // twitter:image here: every page without its own would inherit the root's preview image.
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Promax — Türkiye İşletme Arama Motoru" },
+      {
+        name: "description",
+        content: "Türkiye genelinde 05xx cep telefonu doğrulamalı işletmeleri il ve ilçeye göre keşfedin, gruplara kaydedin.",
+      },
+      { name: "author", content: "Promax" },
+      { property: "og:title", content: "Promax — Türkiye İşletme Arama Motoru" },
+      {
+        property: "og:description",
+        content: "Türkiye genelinde 05xx cep telefonu doğrulamalı işletmeleri il ve ilçeye göre keşfedin, gruplara kaydedin.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Outfit:wght@500;600;700;800&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
@@ -106,7 +117,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="tr">
       <head>
         <HeadContent />
       </head>
@@ -123,8 +134,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <PromaxSessionProvider>
+        <div className="min-h-screen flex flex-col bg-background text-foreground">
+          <PromaxHeader />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+        </div>
+        <Toaster position="bottom-right" richColors />
+      </PromaxSessionProvider>
     </QueryClientProvider>
   );
 }
